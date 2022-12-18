@@ -2,11 +2,11 @@ name: Container (Demo) Build Matrices
 
 on:
   # Enable for testing builds for a PR
+  workflow_dispatch:
   pull_request: []
   push:
     branches:
     - main
-  workflow_dispatch:
 
 jobs:
   generate:
