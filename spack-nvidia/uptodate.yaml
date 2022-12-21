@@ -1,0 +1,6 @@
+dockerbuild:
+  build_args:
+    tag:
+      key: "cuda"
+      versions:
+       - "11.3.0-cudnn8-devel-ubuntu20.04"

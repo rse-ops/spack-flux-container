@@ -1,5 +1,5 @@
-ARG ubuntu_version=20.04
-FROM ubuntu:${ubuntu_version} as builder
+ARG tag="11.3.0-cudnn8-devel-ubuntu20.04"
+FROM nvidia/cuda:${tag} as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SPACK_ROOT=/opt/spack-environment/spack
