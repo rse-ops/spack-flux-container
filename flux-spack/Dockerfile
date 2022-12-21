@@ -1,5 +1,5 @@
-ARG ubuntu_version=20.04
-FROM ubuntu:${ubuntu_version} as builder
+ARG base="ubuntu:20.04"
+FROM ${base} as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SPACK_ROOT=/opt/spack-environment/spack
