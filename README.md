@@ -1,7 +1,7 @@
-# Spack Flux Container
+# Spack Flux Containers
 
-This was a hard container to get right (to have Flux work in entirely with the
-flux operator) so I am providing it as a base here. It is intended to be used
+This was a hard set of containers to get right (to have Flux work in entirely with the
+flux operator) so I am providing them as a base here. They are intended to be used
 as a base for Flux operator images, meaning that the operator adds a curve
 certificate, broker.toml, and handles orchestration.
 
