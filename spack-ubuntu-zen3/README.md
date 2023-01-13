@@ -13,9 +13,9 @@ sudo usermod -a -G docker ec2-user
 newgrp docker
 sudo systemctl enable docker.service
 sudo systemctl start docker.service
-```
+sudo setfacl --modify user:ec2-user:rw /var/run/docker.sock
 
 ```bash
-$ docker build -t ghcr.io/rse-ops/spack-ubuntu-zen3:latest .
+DOCKER_BUILDKIT=1 docker build --network=host -t ghcr.io/rse-ops/spack-ubuntu-zen3:latest .
 ```
 
