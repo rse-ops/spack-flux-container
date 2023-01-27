@@ -14,7 +14,7 @@ and manually pushed [this container](https://github.com/rse-ops/spack-flux-conta
 
 ## Instance
 
-The instance we used is `amazon-eks-node-1.23-v20230105` in us-east-2.
+The instance we used is `amazon-eks-node-1.23-v20230105` in us-east-2 and instance type is [hpc6a.48xlarge](https://aws.amazon.com/ec2/instance-types/).
 
 To reproduce how I shelled into the instance, I needed to do:
 
