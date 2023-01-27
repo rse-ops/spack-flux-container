@@ -3,7 +3,7 @@ FROM ubuntu:${tag} as builder
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SPACK_ROOT=/opt/spack-environment/spack
-ARG spack_cpu_arch=x86_64
+ARG spack_cpu_arch=zen3
 ARG build_jobs=6
 
 RUN apt-get update && \
@@ -29,6 +29,7 @@ RUN apt-get update && \
     libboost-filesystem-dev \
     libboost-regex-dev \
     munge \
+    pkg-config \
     openssh-server \
     openssh-client \
     python-yaml \
@@ -46,28 +47,46 @@ RUN apt-get update && \
 
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
-RUN mkdir /opt/spack-environment \
+#RUN mkdir /opt/spack-environment \
+#    &&  (echo "spack:" \
+#    &&   echo "  specs:" \
+#    &&   echo "  - openmpi@4.1.2 fabrics=ofi +legacylaunchers target=${spack_cpu_arch}" \
+#    &&   echo "  - libfabric@1.14.0 fabrics=efa,tcp,udp,sockets,verbs,shm,mrail,rxd,rxm target=${spack_cpu_arch}" \
+#    &&   echo "  - flux-sched target=${spack_cpu_arch}" \
+#    &&   echo "  - flux-pmix target=${spack_cpu_arch}" \
+#    &&   echo "  concretizer:" \
+#    &&   echo "    unify: when_possible" \
+#    &&   echo "  config:" \
+#    &&   echo "    install_tree: /opt/software" \
+#    &&   echo "  view: /opt/view") > /opt/spack-environment/spack.yaml
+
+# What we want to install and how we want to install it
+# is specified in a manifest file (spack.yaml)
+#RUN mkdir /opt/spack-environment \
     &&  (echo "spack:" \
     &&   echo "  specs:" \
     &&   echo "  - openmpi@4.1.2 fabrics=ofi +legacylaunchers target=${spack_cpu_arch}" \
     &&   echo "  - libfabric@1.14.0 fabrics=efa,tcp,udp,sockets,verbs,shm,mrail,rxd,rxm target=${spack_cpu_arch}" \
-    &&   echo "  - flux-sched target=${spack_cpu_arch}" \
-    &&   echo "  - flux-pmix target=${spack_cpu_arch}" \
-    &&   echo "  concretizer:" \
-    &&   echo "    unify: true" \
+    &&   echo "  concretization: together" \
     &&   echo "  config:" \
     &&   echo "    install_tree: /opt/software" \
     &&   echo "  view: /opt/view") > /opt/spack-environment/spack.yaml
 
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment \
-    && git clone --single-branch --branch v0.19.0 https://github.com/spack/spack.git \
+    && git clone https://github.com/spack/spack.git \
+    && cd spack \
+    && git checkout 7893be7712ed709f6136ac83f49afc3d718d5ddc \
+    && cd ../ \
     && . spack/share/spack/setup-env.sh \
+    && pip3 install clingo \
+    #&& spack install clingo target=${spack_cpu_arch} \
     && spack env activate . \
     && spack external find openssh \
     && spack external find cmake \
-    && spack external find python \
-    && spack install --reuse --fail-fast \
+    && spack external find pkg-config \
+    #&& spack external find python \
+    && spack install --fail-fast --no-cache \
     && spack gc -y
 
 # Strip all the binaries
