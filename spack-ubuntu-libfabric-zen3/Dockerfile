@@ -1,29 +1,34 @@
-FROM ubuntu:20.04 as builder
+FROM ubuntu:22.04 as builder
 
 ARG spack_cpu_arch=zen3
 ARG build_jobs=6
 
-RUN apt-get update
-RUN DEBIAN_FRONTEND="noninteractive" apt-get -y install \
+ARG DEBIAN_FRONTEND='noninteractive'
+RUN apt-get update \
+    && apt-get -y install \
     autotools-dev \
     autoconf \
     automake \
     cmake \
     git \
-    python3 \
+    python3 python3-pip python3-ipython\
     openssh-server \
     openssh-client \
     fftw3-dev fftw3 \
     libtool \
     apt-utils \
-    software-properties-common
- 
-RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y \
-    && apt-get update && apt-get -y upgrade \
-    && apt-get -y install build-essential gcc-11 g++-11 gfortran-11 \
+    software-properties-common \
+    build-essential \
+    gcc g++ gfortran \
     && apt-get clean \
-    && apt-get autoremove \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    && apt-get autoremove 
+ 
+#RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y \
+#    && apt-get update && apt-get -y upgrade \
+#    && apt-get -y install build-essential gcc-11 g++-11 gfortran-11 \
+#    && apt-get clean \
+#    && apt-get autoremove \
+#    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
 # What we want to install and how we want to install it
@@ -48,13 +53,32 @@ RUN mkdir /opt/spack-environment \
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment \
     # I commit changes here
-    && git clone --branch manual-fixes-lammps-efa-jan-2023 https://github.com/flux-framework/spack.git \
+    && git clone --branch manual-fixes-lammps-efa-jan-2023 https://github.com/flux-framework/spack.git
+
+#COPY hwloc-package.py /opt/spack-environment/spack/var/spack/repos/builtin/packages/hwloc/package.py
+
+RUN cd /opt/spack-environment \
     && . spack/share/spack/setup-env.sh \
     && spack env activate . \
+    && spack compiler find \
     && spack external find openssh \
-    && spack external find cmake \
+    && spack external find cmake
+
+RUN DEBIAN_FRONTEND=noninteractive cd /opt/spack-environment \
+    && . spack/share/spack/setup-env.sh \
+    && spack env activate . \
+    && spack spec flux-core@master \
     && spack install --reuse --fail-fast --no-checksum \
     && spack gc -y
+
+#RUN DEBIAN_FRONTEND=noninteractive cd /opt/spack-environment \
+#    && . spack/share/spack/setup-env.sh \
+#    && spack env activate . \
+#    && export SPACK_ADD_DEBUG_FLAGS=true \
+#    && export SPACK_DEBUG_FLAGS="-g" \
+#    && spack spec flux-core@master \
+#    && spack --debug install --keep-stage --reuse --fail-fast --no-checksum \
+#    && spack gc -y
 
 # Strip all the binaries
 RUN find -L /opt/view/* -type f -exec readlink -f '{}' \; | \
@@ -74,6 +98,7 @@ RUN git clone --single-branch --branch stable_29Sep2021_update3 https://github.c
 RUN cd lammps \
     && mkdir build \
     && cd build
+
 WORKDIR /root/lammps/build
 RUN . /etc/profile \ 
     && cmake ../cmake -D PKG_REAXFF=yes -D BUILD_MPI=yes -D PKG_OPT=yes -D FFT=FFTW3 \
@@ -94,5 +119,4 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
 
 COPY ./etc.sudoers /etc/sudoers
 COPY ./entrypoint.sh /entrypoint.sh
-ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
-
+#ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
