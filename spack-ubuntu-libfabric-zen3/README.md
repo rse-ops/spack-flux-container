@@ -33,3 +33,15 @@ DOCKER_BUILDKIT=1 docker build --network=host -t <image> .
 
 Let's hope these work in production - even a tiny failure of a dependency could
 do us in! But I won't cry I'll probably just laugh at this point. Ohh spack.  
+
+Update: we got this working and pushed to [this container](https://github.com/rse-ops/spack-flux-container/pkgs/container/spack-ubuntu-libfabric/69571307?tag=lammps-zen3-working-02-09-2023).
+
+## Local
+
+To build the testing container for `x86_64`, with the same build but for an x86 architecture:
+
+```bash
+$ docker build --build-arg spack_cpu_arch=x86_64 -t ghcr.io/rse-ops/spack-ubuntu-libfabric:lammps-x86-64-02-09-2023 .
+```
+
+This container was built and pushed to [this image](https://github.com/rse-ops/spack-flux-container/pkgs/container/spack-ubuntu-libfabric/69596129?tag=lammps-x86-64-02-09-2023).

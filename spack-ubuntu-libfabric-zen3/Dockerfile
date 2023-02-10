@@ -23,14 +23,6 @@ RUN apt-get update \
     && apt-get clean \
     && apt-get autoremove 
  
-#RUN add-apt-repository ppa:ubuntu-toolchain-r/test -y \
-#    && apt-get update && apt-get -y upgrade \
-#    && apt-get -y install build-essential gcc-11 g++-11 gfortran-11 \
-#    && apt-get clean \
-#    && apt-get autoremove \
-#    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
 RUN mkdir /opt/spack-environment \
@@ -70,15 +62,6 @@ RUN DEBIAN_FRONTEND=noninteractive cd /opt/spack-environment \
     && spack spec flux-core@master \
     && spack install --reuse --fail-fast --no-checksum \
     && spack gc -y
-
-#RUN DEBIAN_FRONTEND=noninteractive cd /opt/spack-environment \
-#    && . spack/share/spack/setup-env.sh \
-#    && spack env activate . \
-#    && export SPACK_ADD_DEBUG_FLAGS=true \
-#    && export SPACK_DEBUG_FLAGS="-g" \
-#    && spack spec flux-core@master \
-#    && spack --debug install --keep-stage --reuse --fail-fast --no-checksum \
-#    && spack gc -y
 
 # Strip all the binaries
 RUN find -L /opt/view/* -type f -exec readlink -f '{}' \; | \
