@@ -105,18 +105,19 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
     python3 get-pip.py && \
     python3 -m pip install pyyaml jsonschema cffi
 
-COPY ./etc.sudoers /etc/sudoers
-COPY ./entrypoint.sh /entrypoint.sh
 
 ENV FI_EFA_USE_DEVICE_RDMA=1
 ENV RDMAV_FORK_SAFE=1
 ENV DEBIAN_FRONTEND=noninteractive
 
 # Install time for timed commands
-RUN apt-get update && apt-get install -y time && \
-    apt-get clean && \
+RUN apt-get update && apt-get install -y time sudo \
+    && apt-get clean && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY ./etc.sudoers /etc/sudoers
+COPY ./entrypoint.sh /entrypoint.sh
 
 USER root
 RUN git clone --depth 1 --branch stable_29Sep2021_update3 https://github.com/lammps/lammps.git /opt/lammps && \
