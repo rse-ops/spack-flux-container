@@ -92,18 +92,6 @@ RUN cd /opt/spack-environment \
     && . spack/share/spack/setup-env.sh \
     && spack env activate --sh -d . >> /etc/profile.d/z10_spack_environment.sh
 
-RUN cd /root
-WORKDIR /root
-RUN git clone --single-branch --branch stable_29Sep2021_update3 https://github.com/lammps/lammps.git
-RUN cd lammps \
-    && mkdir build \
-    && cd build
-
-WORKDIR /root/lammps/build
-RUN . /etc/profile \ 
-    && cmake ../cmake -D PKG_REAXFF=yes -D BUILD_MPI=yes -D PKG_OPT=yes -D FFT=FFTW3 \
-    && make -j ${build_jobs} 
-
 ENV FLUX_OPTION_FLAGS="-ompi=openmpi@5"
 
 # Make sure that flux owns the spack install (so we see it)
@@ -119,4 +107,35 @@ RUN wget https://bootstrap.pypa.io/get-pip.py && \
 
 COPY ./etc.sudoers /etc/sudoers
 COPY ./entrypoint.sh /entrypoint.sh
+
+ENV FI_EFA_USE_DEVICE_RDMA=1
+ENV RDMAV_FORK_SAFE=1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install time for timed commands
+RUN apt-get update && apt-get install -y time && \
+    apt-get clean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+USER root
+RUN git clone --depth 1 --branch stable_29Sep2021_update3 https://github.com/lammps/lammps.git /opt/lammps && \
+    cd /opt/lammps && \
+    mkdir build && \
+    cd build && \
+    . /etc/profile && \ 
+    cmake ../cmake -D PKG_REAXFF=yes -D BUILD_MPI=yes -D PKG_OPT=yes -D FFT=FFTW3 && \
+    make -j ${build_jobs} && \
+    make install
+
+# Create a home to put the examples in, and
+# ensure lmp executable is on path for flux user
+# And anyone can interact with lammps examples
+RUN mv /opt/lammps/examples /home/flux/examples && \
+    chown -R 1234 /home/flux/examples && \
+    cp /root/.local/bin/lmp /usr/local/bin/lmp
+    
+# Target this example
+ENV PATH=/root/.local/bin:$PATH
+WORKDIR /home/flux/examples/reaxff/HNS
 #ENTRYPOINT ["/bin/bash", "/entrypoint.sh"]
