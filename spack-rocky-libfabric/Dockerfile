@@ -141,14 +141,9 @@ RUN cd /opt/spack-environment \
 ENV FLUX_OPTION_FLAGS="-ompi=openmpi@5"
 
 # Make sure that flux owns the spack install (so we see it)
-# We have to install python deps to system python because they are not
-# seen in the spaaaaaaaaaaaaaaaaaaaaaaaaaack install
-RUN sudo adduser --disabled-password --uid 1000 --gecos "" flux && \
+RUN sudo adduser --password flux --uid 1000 flux && \
     chown -R flux /opt && \
-    sudo chmod -R +r /opt && \
-    sudo apt-get install python3-distutils && \
-    wget https://bootstrap.pypa.io/get-pip.py && \
-    sudo python3 -m pip install pyyaml jsonschema cffi
+    sudo chmod -R +r /opt
 
 COPY ./etc.sudoers /etc/sudoers
 COPY ./entrypoint.sh /entrypoint.sh
