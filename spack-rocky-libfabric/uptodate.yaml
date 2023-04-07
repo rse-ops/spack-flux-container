@@ -1,6 +1,6 @@
 dockerbuild:
   build_args:
     tag:
-      key: "ubuntu"
+      key: "tag"
       versions:
        - "8"
