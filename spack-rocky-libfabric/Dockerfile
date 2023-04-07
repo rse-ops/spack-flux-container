@@ -115,7 +115,9 @@ RUN mkdir /opt/spack-environment \
 
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment \
-    && git clone --single-branch --branch v0.19.0 https://github.com/spack/spack.git \
+    && git clone --single-branch -b develop https://github.com/spack/spack.git \
+    # When flux-core 0.49.0 added, but flux-pmix 0.3.0 not added yet
+    && git checkout b32edd3a72e8c39d69dea4ab0dd2066d460913d5 && \
     && . spack/share/spack/setup-env.sh \
     && spack env activate . \
     && spack external find openssh \
