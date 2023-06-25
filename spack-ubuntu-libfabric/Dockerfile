@@ -50,6 +50,7 @@ RUN mkdir /opt/spack-environment \
     &&   echo "  specs:" \
     &&   echo "  - openmpi@4.1.2 fabrics=ofi +legacylaunchers target=${spack_cpu_arch}" \
     &&   echo "  - libfabric@1.14.0 fabrics=efa,tcp,udp,sockets,verbs,shm,mrail,rxd,rxm target=${spack_cpu_arch}" \
+    &&   echo "  - flux-core +security target=${spack_cpu_arch}" \
     &&   echo "  - flux-sched target=${spack_cpu_arch}" \
     &&   echo "  - flux-pmix target=${spack_cpu_arch}" \
     &&   echo "  concretizer:" \
@@ -60,7 +61,7 @@ RUN mkdir /opt/spack-environment \
 
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment \
-    && git clone --single-branch --branch v0.19.0 https://github.com/spack/spack.git \
+    && git clone --single-branch --branch v0.20.0 https://github.com/spack/spack.git \
     && . spack/share/spack/setup-env.sh \
     && spack env activate . \
     && spack external find openssh \

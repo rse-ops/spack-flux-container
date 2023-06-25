@@ -1,6 +1,6 @@
 dockerbuild:
   build_args:
     tag:
-      key: "ubuntu"
+      key: "spack"
       versions:
-       - "20.04"
+       - "0.20.0"
