@@ -4,7 +4,6 @@ FROM ubuntu:${tag} as builder
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SPACK_ROOT=/opt/spack-environment/spack
 ARG spack_cpu_arch=x86_64
-ARG build_jobs=6
 
 RUN apt-get update && \
     apt-get -y install \
