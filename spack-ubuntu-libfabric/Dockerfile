@@ -4,7 +4,6 @@ FROM ubuntu:${tag} as builder
 ENV DEBIAN_FRONTEND=noninteractive
 ENV SPACK_ROOT=/opt/spack-environment/spack
 ARG spack_cpu_arch=x86_64
-ARG build_jobs=6
 
 RUN apt-get update && \
     apt-get -y install \
@@ -61,7 +60,7 @@ RUN mkdir /opt/spack-environment \
 
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment \
-    && git clone --single-branch --branch v0.19.0 https://github.com/spack/spack.git \
+    && git clone --single-branch --branch v0.20.0 https://github.com/spack/spack.git \
     && . spack/share/spack/setup-env.sh \
     && spack env activate . \
     && spack external find openssh \
