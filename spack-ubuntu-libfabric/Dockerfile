@@ -50,7 +50,6 @@ RUN mkdir /opt/spack-environment \
     &&   echo "  specs:" \
     &&   echo "  - openmpi@4.1.2 fabrics=ofi +legacylaunchers target=${spack_cpu_arch}" \
     &&   echo "  - libfabric@1.14.0 fabrics=efa,tcp,udp,sockets,verbs,shm,mrail,rxd,rxm target=${spack_cpu_arch}" \
-    &&   echo "  - flux-core +security target=${spack_cpu_arch}" \
     &&   echo "  - flux-sched target=${spack_cpu_arch}" \
     &&   echo "  - flux-pmix target=${spack_cpu_arch}" \
     &&   echo "  concretizer:" \
