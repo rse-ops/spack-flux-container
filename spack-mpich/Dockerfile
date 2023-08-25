@@ -50,15 +50,15 @@ RUN mkdir /opt/spack-environment \
 WORKDIR /opt/spack-environment
 RUN git clone https://github.com/spack/spack.git
 
-# This has openmpi replaced with virtual package mpi
-COPY ./package.py ./var/spack/repos/builtin/packages/flux-core/package.py 
-
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment \
     && cd spack \
     # When flux-core 0.49.0 added, but flux-pmix 0.3.0 not added yet
-    && git checkout b32edd3a72e8c39d69dea4ab0dd2066d460913d5 \
-    && cd ../ \
+    && git checkout b32edd3a72e8c39d69dea4ab0dd2066d460913d5
+
+# This has openmpi replaced with virtual package mpi
+COPY ./package.py /opt/spack-environment/spack/var/spack/repos/builtin/packages/flux-core/package.py 
+RUN cd /opt/spack-environment \
     && . spack/share/spack/setup-env.sh \
     && spack env activate . \
     && spack external find openssh \
