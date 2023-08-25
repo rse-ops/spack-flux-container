@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     openssh-server \
     openssh-clients \
     gfortran \
+    cmake \
     bzip2 \
     g++ gcc \
     diffutils \
@@ -26,7 +27,10 @@ RUN apt-get update && apt-get install -y \
     unzip
 
 ENV LANG=C.UTF-8
-RUN printf "LANG=C.UTF-8" > /etc/locale.conf
+
+#  Set default /usr/bin/python to python3
+RUN printf "LANG=C.UTF-8" > /etc/locale.conf && \
+    alternatives --set python /usr/bin/python3
 
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
