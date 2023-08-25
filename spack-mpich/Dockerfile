@@ -1,37 +1,102 @@
-ARG tag=22.04
-FROM ubuntu:${tag}
-ARG spack_cpu_arch=x86_64
+ARG tag="8"
+FROM rockylinux:${tag} as builder
+
 ENV DEBIAN_FRONTEND=noninteractive
+ENV SPACK_ROOT=/opt/spack-environment/spack
+ARG spack_cpu_arch=x86_64
 
-# see http://hpctoolkit.org/software-instructions.html
-RUN apt-get update && apt-get install -y \
-    git \
-    file \
-    build-essential \
-    python3 \
-    python3-dev \
-    python3-cffi \
-    python3-six \
-    python3-yaml \
-    python3-jsonschema \
-    python3-sphinx \
-    openssh-server \
-    openssh-client \
-    gfortran \
-    cmake \
-    bzip2 \
-    g++ gcc \
-    diffutils \
-    python3-dev \
-    curl \
-    wget \
-    unzip
-
-ENV LANG=C.UTF-8
+#  Enable PowerTools for development packages
+RUN yum -y update \
+ && dnf -y install 'dnf-command(config-manager)' \
+ && yum config-manager --set-enabled powertools \
+ && yum -y update \
+#  Enable EPEL
+ && yum -y install epel-release \
+#  Utilities
+ && yum -y install \
+	wget \
+	man-db \
+	less \
+	xz \
+	lbzip2 \
+        fftw-devel \
+        fftw \
+	git \
+	curl \
+	bind-utils \
+	sudo \
+	munge \
+	ccache \
+	lua \
+	valgrind \
+	jq \
+	which \
+	file \
+	unzip \
+	vim \
+	patch \
+	diffutils \
+#  Compilers, autotools
+	pkgconfig \
+	libtool \
+	autoconf \
+	automake \
+	gcc-gfortran \
+	gcc \
+	gcc-c++ \
+	make \
+	cmake \
+	bison \	
+	flex \
+#  Python
+	python36 \
+	python3-devel \
+	python3-cffi \
+	python3-six \
+	python3-yaml \
+	python3-jsonschema \
+	python3-sphinx \
+#  Development dependencies
+	libsodium-devel \
+        libyaml-devel \
+        libgomp \
+	zeromq-devel \
+	czmq-devel \
+	jansson-devel \
+	munge-devel \
+	ncurses-devel \
+	lz4-devel \
+	sqlite-devel \
+        boost-devel \
+	libuuid-devel \
+	hwloc-devel \
+	lua-devel \
+        libedit-devel \
+	valgrind-devel \
+	libs3-devel \
+	systemd-devel \
+	libarchive-devel \
+	pam-devel \
+#  Other deps
+        openssh-server \
+        openssh-clients \
+	perl-Time-HiRes \
+	lua-posix \
+	libfaketime \
+	cppcheck \
+	enchant \
+	aspell \
+	aspell-en \
+	sudo \
+	glibc-langpack-en \
+	hwloc \
+ && yum clean all
 
 #  Set default /usr/bin/python to python3
-RUN printf "LANG=C.UTF-8" > /etc/locale.conf && \
-    ln -s /usr/bin/python3 /usr/bin/python
+RUN alternatives --set python /usr/bin/python3
+
+ENV LANG=C.UTF-8
+RUN printf "LANG=C.UTF-8" > /etc/locale.conf
 
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)

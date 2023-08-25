@@ -3,4 +3,4 @@ dockerbuild:
     tag:
       key: "tag"
       versions:
-       - "22.04"
+       - "8"
