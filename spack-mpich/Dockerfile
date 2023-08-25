@@ -31,7 +31,7 @@ ENV LANG=C.UTF-8
 
 #  Set default /usr/bin/python to python3
 RUN printf "LANG=C.UTF-8" > /etc/locale.conf && \
-    alternatives --set python /usr/bin/python3
+    ln -s /usr/bin/python3 /usr/bin/python
 
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
