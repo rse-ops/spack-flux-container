@@ -40,7 +40,7 @@ RUN mkdir /opt/spack-environment \
     &&   echo "  specs:" \
     &&   echo "  - mpich target=${spack_cpu_arch}" \
     &&   echo "  - flux-sched target=${spack_cpu_arch}" \
-    &&   echo "  - flux-pmix target=${spack_cpu_arch}" \
+    &&   echo "  - flux-core+mpi target=${spack_cpu_arch}" \
     &&   echo "  concretizer:" \
     &&   echo "    unify: true" \
     &&   echo "  config:" \
@@ -51,7 +51,7 @@ WORKDIR /opt/spack-environment
 RUN git clone https://github.com/spack/spack.git
 
 # This has openmpi replaced with virtual package mpi
-COPY ./package.py ./var/spack/repos/builtin/packages/flux-pmix/package.py 
+COPY ./package.py ./var/spack/repos/builtin/packages/flux-core/package.py 
 
 # Install the software, remove unnecessary deps
 RUN cd /opt/spack-environment \
