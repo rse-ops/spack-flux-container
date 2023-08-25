@@ -7,8 +7,8 @@ RUN apt-get update && apt-get install -y \
     git \
     file \
     build-essential \
-    python36 \
-    python3-devel \
+    python3 \
+    python3-dev \
     python3-cffi \
     python3-six \
     python3-yaml \
