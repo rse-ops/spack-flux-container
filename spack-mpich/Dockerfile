@@ -1,6 +1,7 @@
 ARG tag=22.04
 FROM ubuntu:${tag}
 ARG spack_cpu_arch=x86_64
+ENV DEBIAN_FRONTEND=noninteractive
 
 # see http://hpctoolkit.org/software-instructions.html
 RUN apt-get update && apt-get install -y \
