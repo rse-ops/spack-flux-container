@@ -1,6 +1,8 @@
 ARG tag=jammy
 FROM spack/ubuntu-${tag}:latest as builder
 
+RUN apt-get update && apt-get install-y libntirpc-dev
+
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
 RUN mkdir /opt/spack-environment \
@@ -47,7 +49,7 @@ RUN { \
 && ln -s /opt/views/view /opt/view
 
 # Ensure munge is installed and enabled. This is a design flaw
-RUN apt-get update && apt-get install -y munge
+RUN apt-get update && apt-get install -y munge libntirpc-dev
 
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/bin/bash" ]
