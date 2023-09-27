@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y libntirpc-dev
 # is specified in a manifest file (spack.yaml)
 RUN mkdir /opt/spack-environment \
 &&  (echo spack: \
-&&   echo '  specs: [flux-sched, flux-core, flux-pmix, flux-security]' \
+&&   echo '  specs: [flux-sched, flux-core, flux-security]' \
 &&   echo '  view: /opt/views/view' \
 &&   echo '  concretizer:' \
 &&   echo '    unify: true' \
