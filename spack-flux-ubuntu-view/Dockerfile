@@ -1,7 +1,7 @@
 ARG tag=jammy
 FROM spack/ubuntu-${tag}:latest as builder
 
-RUN apt-get update && apt-get install-y libntirpc-dev
+RUN apt-get update && apt-get install -y libntirpc-dev
 
 # What we want to install and how we want to install it
 # is specified in a manifest file (spack.yaml)
