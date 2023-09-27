@@ -46,6 +46,9 @@ RUN { \
 && chmod a+x /entrypoint.sh \
 && ln -s /opt/views/view /opt/view
 
+# Ensure munge is installed and enabled. This is a design flaw
+RUN dnf install -y munge && systemctl enable munge
+
 ENTRYPOINT [ "/entrypoint.sh" ]
 CMD [ "/bin/bash" ]
 
